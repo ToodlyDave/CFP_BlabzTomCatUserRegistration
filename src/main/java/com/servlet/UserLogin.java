@@ -2,6 +2,8 @@ package com.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -31,7 +33,17 @@ public class UserLogin extends HttpServlet {
 		System.out.println(" user: " + user + " input: " + userInput);
 		System.out.println(" pwd: " + password + " input: " + pwdInput);
 		
+		Pattern pattern = Pattern.compile("^([A-Z][a-zA-Z]{2,}[ ]?)+$");
+		Matcher matcher = pattern.matcher(userInput);
+		if(!matcher.matches()) {
+			System.out.println(" Invalid user");
+			RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
+			rd.include(request, response);
+			return;
+		}
+		
 		if (user.equalsIgnoreCase(userInput) && password.equalsIgnoreCase(pwdInput)) {
+			
 			System.out.println(" Correct user");
 			request.setAttribute("user", user);
 			request.getRequestDispatcher("/LoginSuccess.jsp").forward(request, response);
