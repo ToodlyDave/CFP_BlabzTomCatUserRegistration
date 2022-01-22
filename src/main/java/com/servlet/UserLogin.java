@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 		urlPatterns = "/UserLogin",
 		initParams = {
 				@WebInitParam(name = "user", value = "David"),
-				@WebInitParam(name = "password", value = "123")
+				@WebInitParam(name = "password", value = "hiThere123$")
 		}
 )
 public class UserLogin extends HttpServlet {
@@ -33,10 +33,21 @@ public class UserLogin extends HttpServlet {
 		System.out.println(" user: " + user + " input: " + userInput);
 		System.out.println(" pwd: " + password + " input: " + pwdInput);
 		
-		Pattern pattern = Pattern.compile("^([A-Z][a-zA-Z]{2,}[ ]?)+$");
-		Matcher matcher = pattern.matcher(userInput);
-		if(!matcher.matches()) {
+		Pattern userPattern = Pattern.compile("^([A-Z][a-zA-Z]{2,}[ ]?)+$");
+		Matcher userMatcher = userPattern.matcher(userInput);
+		
+		Pattern pwdPattern = Pattern.compile("^(?=^[^\\W_]*[A-Z][^\\W_]*[0-9][^\\W_]*[\\W_][^\\W_]*$).{8,}$");
+		Matcher pwdMatcher = pwdPattern.matcher(pwdInput);
+		
+		if(!userMatcher.matches()) {
 			System.out.println(" Invalid user");
+			RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
+			rd.include(request, response);
+			return;
+		}
+		
+		if(!pwdMatcher.matches()) {
+			System.out.println(" Invalid password");
 			RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
 			rd.include(request, response);
 			return;
